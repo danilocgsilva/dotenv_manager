@@ -1,0 +1,2 @@
+class InteractorException(Exception):
+    pass
