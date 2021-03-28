@@ -11,5 +11,3 @@ def main():
         commands = Commands(interactor.argument)
     except CommandsException:
         Tasks().zeroOrder()
-
-
