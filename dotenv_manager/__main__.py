@@ -1,7 +1,7 @@
 import sys
 from dotenv_manager.Interactor import Interactor
-from dotenv_manager.Invoker import Invoker
 from dotenv_manager.Tasks import Tasks
+from danilocgsilvame_python_helpers.DcgsPythonHelpers import DcgsPythonHelpers
 
 def main():
 
@@ -10,6 +10,7 @@ def main():
         Tasks().zeroOrder()
         exit()
     
-    invoker = Invoker(interactor.argument)
-    invoker.execute()
+    pHelpers = DcgsPythonHelpers()
+    argumentsparsed = pHelpers.command_line_argument_names('command', 'c', 'template', 't')
+    print("The command was " + argumentsparsed.command + " and the template was " + argumentsparsed.template)
 

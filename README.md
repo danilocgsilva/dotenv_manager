@@ -48,7 +48,7 @@ Sets a value for the variable `MYVARIABLE` from `groupenvironment`
 
 (to be implemented)
 ```
-demanage -m groupenvironment -c .env
+demanage -m groupenvironment -f .env
 ```
 Creates a group environment name `groupenvironment` based on `.env` file.
 
