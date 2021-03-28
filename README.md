@@ -16,8 +16,44 @@ pip install .
 
 ## Usage
 
+(to be implemented)
 ```
 demanager
 ```
+List all commands for demanager
 
-Give you instructions in the terminal.
+(to be implemented)
+```
+demanager -m :
+```
+List all environments variables groups
+
+(to be implemented)
+```
+demanager -m groupenvironment:
+```
+List all variables from the `groupenvironment` group environment.
+
+(to be implemented)
+```
+demanager -m groupenvironment:MYVARIABLE
+```
+Shows the variable value
+
+(to be implemented)
+```
+demanager -m groupenvironment:MYVARIABLE variable_value
+```
+Sets a value for the variable `MYVARIABLE` from `groupenvironment`
+
+(to be implemented)
+```
+demanage -m groupenvironment -c .env
+```
+Creates a group environment name `groupenvironment` based on `.env` file.
+
+(to be implemented)
+```
+demanage -m groupenvironment -t .env
+```
+Creates a group environment *template*. Which means, you may have several projects with the same variables groups.
