@@ -14,8 +14,10 @@ class test_Data(unittest.TestCase):
     def test_save_environment_group(self):
 
         data = Data()
-        
+
         environmentGroupName = "my_environment"
         data.environmentGroup(environmentGroupName).save()
         existsGroup = data.environmentGroup(environmentGroupName).exists()
         self.assertTrue(existsGroup)
+
+    def test_correct_path_for
