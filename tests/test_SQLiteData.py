@@ -26,7 +26,12 @@ class test_SQLiteData(unittest.TestCase):
 
     def test_return_string_creating_empty_database(self):
         temporaryDir = self.__makeTemporaryTestDir()
-        return self.assertFalse(True)
+
+        sqliteData = SQLiteData()
+        sqliteData.basePath = temporaryDir
+        responseCreated = sqliteData.createDatabaseTables()
+        expectedResponse = "created"
+        self.assertEqual(expectedResponse, responseCreated)
 
     def test_correct_path_for_sqlite(self):
 
@@ -35,7 +40,7 @@ class test_SQLiteData(unittest.TestCase):
         databaseName = ".dotenv_manager"
 
         expected_path = os.path.join(str(Path.home()), databaseName)
-        object_path = sqliteData.getDatabasePath()
+        object_path = sqliteData.getFullDatabasePath()
         self.assertEqual(expected_path, object_path)
 
     def __getTemporaryTestDir(self):
