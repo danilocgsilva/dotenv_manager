@@ -8,24 +8,38 @@ class SQLiteData(DataInterface):
 
     def __init__(self):
         self.currentEnvironmentGroup = None
+        self.cursor = None
         self.fileName = ".dotenv_manager"
-        self.basePath = str(Path.home())
+
+    def setDatabaseFullPath(self, full_path: str):
+        self.databaseFullPath = full_path
+        self.connection = sqlite3.connect(self.getFullDatabasePath())
 
     def exists(self):
+        statement_search = "SELECT name FROM variable_group WHERE name = ?;"
+        t = (self.currentEnvironmentGroup,)
+
         return True
 
     def save(self):
+        save_statement = "INSERT INTO "
         return True
 
     def environmentGroup(self, currentEnvironmentGroup):
         self.currentEnvironmentGroup = currentEnvironmentGroup
+        return self
 
     def getFullDatabasePath(self):
-        return os.path.join(self.basePath, self.fileName)
+        return self.databaseFullPath
+
+    def getFileNameSuggestion(self):
+        return ".dotenv_manager"
+
+    def getFolderBaseSuggestion(self):
+        return str(Path.home())
 
     def createDatabaseTables(self):
-        connection = sqlite3.connect(self.getFullDatabasePath())
-
+        
         create_variable_table_statement = """
 CREATE TABLE variables (
     id integer PRIMARY KEY,
@@ -47,11 +61,11 @@ CREATE TABLE variables (
     project_name text NOT NULL
 )
 """
-        cursor = connection.cursor()
-        cursor.execute(create_variable_table_statement)
-        cursor.execute(create_variable_group_statements)
-        cursor.execute(create_group_environment_table_statements)
-        cursor.execute(create_table_templates_statements)
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(create_variable_table_statement)
+        self.cursor.execute(create_variable_group_statements)
+        self.cursor.execute(create_group_environment_table_statements)
+        self.cursor.execute(create_table_templates_statements)
         return "created"
 
 

@@ -24,11 +24,17 @@ class test_SQLiteData(unittest.TestCase):
         existsGroup = sqliteData.environmentGroup(environmentGroupName).exists()
         self.assertTrue(existsGroup)
 
-    def test_return_string_creating_empty_database(self):
-        temporaryDir = self.__makeTemporaryTestDir()
-
+    def test_not_existing_for_another_environment_group(self):
         sqliteData = SQLiteData()
-        sqliteData.basePath = temporaryDir
+        temporary_dir = self.__makeTemporaryTestDir()
+        environmentGroupName = "my_environment"
+        anotherEnvironmentGroup = "another_group"
+        sqliteData.environmentGroup(environmentGroupName).save()
+        existsGroup = sqliteData.environmentGroup(anotherEnvironmentGroup).exists()
+        self.assertFalse(existsGroup)
+
+    def test_return_string_creating_empty_database(self):
+        sqliteData = self.__getTemporarySqliteConnection()
         responseCreated = sqliteData.createDatabaseTables()
         expectedResponse = "created"
         self.assertEqual(expectedResponse, responseCreated)
@@ -39,17 +45,43 @@ class test_SQLiteData(unittest.TestCase):
 
         databaseName = ".dotenv_manager"
 
+        fullDatabasePath = os.path.join(
+            sqliteData.getFolderBaseSuggestion(),
+            databaseName
+        )
+
+        sqliteData.setDatabaseFullPath(fullDatabasePath)
+
         expected_path = os.path.join(str(Path.home()), databaseName)
+
         object_path = sqliteData.getFullDatabasePath()
         self.assertEqual(expected_path, object_path)
 
     def __getTemporaryTestDir(self):
         dateHash = DcgsPythonHelpers().getHashDateFromDate()
         systemTemporaryLocation = tempfile.gettempdir()
-        return os.path.join(systemTemporaryLocation, "dotenv_manager_unit_test-" + dateHash)
+        fullPath = os.path.join(systemTemporaryLocation, "dotenv_manager_unit_test-" + dateHash)
+        
+        loopCurrent = 1
+        while os.path.exists(fullPath):
+            fullPath = fullPath + "-" + str(loopCurrent)
+            loopCurrent += 1
+        return fullPath
 
     def __makeTemporaryTestDir(self):
         temporaryDir = self.__getTemporaryTestDir()
         os.makedirs(temporaryDir)
         return temporaryDir
-        
+
+    def __getTemporarySqliteConnection(self):
+        temporary_directory = self.__makeTemporaryTestDir()
+        sqliteData = SQLiteData()
+        temporary_full_path_sqlite_file = os.path.join(
+            temporary_directory,
+            sqliteData.getFileNameSuggestion()
+        )
+        sqliteData.setDatabaseFullPath(temporary_full_path_sqlite_file)
+        return sqliteData
+
+if __name__ == '__main__':
+    unittest.main()
