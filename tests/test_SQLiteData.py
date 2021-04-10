@@ -11,7 +11,8 @@ class test_SQLiteData(unittest.TestCase):
 
     def test_not_exists_environment_group(self):
 
-        sqliteData = SQLiteData()
+        sqliteData = self.__getTemporarySqliteConnection()
+        sqliteData.createDatabaseTables()
 
         environmentGroupName = "my_environment"
         existsGroup = sqliteData.environmentGroup(environmentGroupName).exists()
@@ -20,6 +21,7 @@ class test_SQLiteData(unittest.TestCase):
     def test_save_environment_group(self):
 
         sqliteData = self.__getTemporarySqliteConnection()
+        sqliteData.createDatabaseTables()
 
         environmentGroupName = "my_environment"
         sqliteData.environmentGroup(environmentGroupName).save()
@@ -28,11 +30,20 @@ class test_SQLiteData(unittest.TestCase):
 
     def test_not_existing_for_another_environment_group(self):
         sqliteData = self.__getTemporarySqliteConnection()
+        sqliteData.createDatabaseTables()
         environmentGroupName = "my_environment"
         anotherEnvironmentGroup = "another_group"
         sqliteData.environmentGroup(environmentGroupName).save()
         existsGroup = sqliteData.environmentGroup(anotherEnvironmentGroup).exists()
         self.assertFalse(existsGroup)
+
+    def test_save_already_existing_environment_group(self):
+        environmentGroupNameTesting = "created_earlier"
+        sqliteData = self.__getTemporarySqliteConnection()
+        sqliteData.createDatabaseTables()
+        sqliteData.environmentGroup(environmentGroupNameTesting).save()
+        with self.assertRaises(Exception):
+            sqliteData.environmentGroup(environmentGroupNameTesting).save()
 
     def test_return_string_creating_empty_database(self):
         sqliteData = self.__getTemporarySqliteConnection()

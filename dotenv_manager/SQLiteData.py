@@ -10,6 +10,12 @@ class SQLiteData(DataInterface):
         self.currentEnvironmentGroup = None
         self.cursor = None
         self.fileName = ".dotenv_manager"
+        self.columnNames = {
+            "variables": "variables",
+            "variable_group": "variable_group",
+            "environment_group": "environment_group",
+            "templates": "templates"
+        }
 
     def setDatabaseFullPath(self, full_path: str):
         self.databaseFullPath = full_path
@@ -17,7 +23,7 @@ class SQLiteData(DataInterface):
         self.cursor = self.connection.cursor()
 
     def exists(self):
-        statement_search = "SELECT name FROM variable_group WHERE name = ?;"
+        statement_search = "SELECT name FROM " + self.columnNames["environment_group"]  + " WHERE name = ?;"
         t = (self.currentEnvironmentGroup,)
         self.cursor.execute(statement_search, t)
         rows = self.cursor.fetchall()
@@ -26,10 +32,18 @@ class SQLiteData(DataInterface):
             return True
         if len(rows) == 0:
             return False
+
         raise Exception("The result was unexpected.")
 
     def save(self):
-        save_statement = "INSERT INTO "
+
+        if self.__environmentGroupAlreadyExists(self.environmentGroup):
+            raise Exception("The environemnt group " + self.environmentGroup + " already exists.")
+
+        save_statement = "INSERT INTO " + self.columnNames["environment_group"] + " (name) VALUES ('" + self.currentEnvironmentGroup + "')"
+
+        self.cursor.execute(save_statement)
+
         return True
 
     def environmentGroup(self, currentEnvironmentGroup):
@@ -48,7 +62,7 @@ class SQLiteData(DataInterface):
     def createDatabaseTables(self):
         
         create_variable_table_statement = """
-CREATE TABLE variables (
+CREATE TABLE {table_name} (
     id integer PRIMARY KEY,
     name text NOT NULL,
     value text NOT NULL,
@@ -56,23 +70,27 @@ CREATE TABLE variables (
     group_id INT,
     template_id INT
 );"""
-        create_variable_group_statements = """CREATE TABLE variable_group (
+        create_variable_group_statements = """CREATE TABLE {table_name} (
     id integer PRIMARY KEY
 );"""
-        create_group_environment_table_statements = """CREATE TABLE group_environment (
+        create_environment_group_table_statements = """CREATE TABLE {table_name} (
     id integer PRIMARY KEY,
     name text NOT NULL
 );"""
-        create_table_templates_statements = """CREATE TABLE templates (
+        create_table_templates_statements = """CREATE TABLE {table_name} (
     id integer PRIMARY KEY,
     project_name text NOT NULL
 )
 """
-        self.cursor.execute(create_variable_table_statement)
-        self.cursor.execute(create_variable_group_statements)
-        self.cursor.execute(create_group_environment_table_statements)
-        self.cursor.execute(create_table_templates_statements)
+        self.cursor.execute(create_variable_table_statement.format(table_name = self.columnNames["variables"]))
+        self.cursor.execute(create_variable_group_statements.format(table_name = self.columnNames["variable_group"]))
+        self.cursor.execute(create_environment_group_table_statements.format(table_name = self.columnNames["environment_group"]))
+        self.cursor.execute(create_table_templates_statements.format(table_name = self.columnNames["templates"]))
         return "created"
 
+    def __environmentGroupAlreadyExists(self, environmentGroupName):
 
+        
+
+        return False
 

@@ -10,7 +10,7 @@ The variable name that will be stored.
 
 You may require group variables to facilitates the .env file formating. Sometimes, you will require to make a simple line blank separation in the middle of .env file.
 
-**Table group_environment**
+**Table environment_group**
 
 The environments that will be used by your projects and group variables
 
@@ -31,7 +31,7 @@ The projects may require a set o variables. So, at new environment, you will nee
 * Table variable_group
    * id int
 
-* Table group_environment
+* Table environment_group
     * id int
     * name string
 
