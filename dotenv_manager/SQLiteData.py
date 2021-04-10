@@ -14,12 +14,19 @@ class SQLiteData(DataInterface):
     def setDatabaseFullPath(self, full_path: str):
         self.databaseFullPath = full_path
         self.connection = sqlite3.connect(self.getFullDatabasePath())
+        self.cursor = self.connection.cursor()
 
     def exists(self):
         statement_search = "SELECT name FROM variable_group WHERE name = ?;"
         t = (self.currentEnvironmentGroup,)
+        self.cursor.execute(statement_search, t)
+        rows = self.cursor.fetchall()
 
-        return True
+        if len(rows) == 1:
+            return True
+        if len(rows) == 0:
+            return False
+        raise Exception("The result was unexpected.")
 
     def save(self):
         save_statement = "INSERT INTO "
@@ -61,7 +68,6 @@ CREATE TABLE variables (
     project_name text NOT NULL
 )
 """
-        self.cursor = self.connection.cursor()
         self.cursor.execute(create_variable_table_statement)
         self.cursor.execute(create_variable_group_statements)
         self.cursor.execute(create_group_environment_table_statements)

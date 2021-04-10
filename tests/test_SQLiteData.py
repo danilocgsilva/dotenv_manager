@@ -1,9 +1,11 @@
+import os
+import sys
+sys.path.insert(1, "..")
 import unittest 
+import tempfile
 from dotenv_manager.SQLiteData import SQLiteData
 from pathlib import Path
-import os
 from danilocgsilvame_python_helpers.DcgsPythonHelpers import DcgsPythonHelpers
-import tempfile
 
 class test_SQLiteData(unittest.TestCase):
 
@@ -17,7 +19,7 @@ class test_SQLiteData(unittest.TestCase):
 
     def test_save_environment_group(self):
 
-        sqliteData = SQLiteData()
+        sqliteData = self.__getTemporarySqliteConnection()
 
         environmentGroupName = "my_environment"
         sqliteData.environmentGroup(environmentGroupName).save()
@@ -25,8 +27,7 @@ class test_SQLiteData(unittest.TestCase):
         self.assertTrue(existsGroup)
 
     def test_not_existing_for_another_environment_group(self):
-        sqliteData = SQLiteData()
-        temporary_dir = self.__makeTemporaryTestDir()
+        sqliteData = self.__getTemporarySqliteConnection()
         environmentGroupName = "my_environment"
         anotherEnvironmentGroup = "another_group"
         sqliteData.environmentGroup(environmentGroupName).save()
