@@ -82,6 +82,7 @@ class test_SQLiteData(unittest.TestCase):
 
     def __makeTemporaryTestDir(self):
         temporaryDir = self.__getTemporaryTestDir()
+        # print(temporaryDir + "------")
         os.makedirs(temporaryDir)
         return temporaryDir
 

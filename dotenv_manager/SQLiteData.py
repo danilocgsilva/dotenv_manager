@@ -37,8 +37,8 @@ class SQLiteData(DataInterface):
 
     def save(self):
 
-        if self.__environmentGroupAlreadyExists(self.environmentGroup):
-            raise Exception("The environemnt group " + self.environmentGroup + " already exists.")
+        if self.__environmentGroupAlreadyExists(self.currentEnvironmentGroup):
+            raise Exception("The environemnt group " + self.currentEnvironmentGroup + " already exists.")
 
         save_statement = "INSERT INTO " + self.columnNames["environment_group"] + " (name) VALUES ('" + self.currentEnvironmentGroup + "')"
 
@@ -90,7 +90,11 @@ CREATE TABLE {table_name} (
 
     def __environmentGroupAlreadyExists(self, environmentGroupName):
 
-        
-
+        select_term = "SELECT name FROM {environment_group_name} WHERE name = ?;".format(environment_group_name = self.columnNames["environment_group"])
+        filter_query = (environmentGroupName,)
+        self.cursor.execute(select_term, filter_query)
+        resultsRows = self.cursor.fetchall()
+        if len(resultsRows) > 0:
+            return True
         return False
 
