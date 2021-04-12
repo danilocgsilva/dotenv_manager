@@ -5,12 +5,14 @@ from danilocgsilvame_python_helpers.DcgsPythonHelpers import DcgsPythonHelpers
 
 def main():
 
+    tasks = Tasks()
+
     interactor = Interactor()
     if not interactor.argument:
-        Tasks().zeroOrder()
+        tasks.zeroOrder()
         exit()
     
     pHelpers = DcgsPythonHelpers()
-    argumentsparsed = pHelpers.command_line_argument_names('command', 'c', 'template', 't')
-    print("The command was " + argumentsparsed.command + " and the template was " + argumentsparsed.template)
+    argumentsparsed = pHelpers.command_line_argument_names('command', 'c', 'template', 't', 'manage', 'm')
+    tasks.process(argumentsparsed)
 

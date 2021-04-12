@@ -59,6 +59,12 @@ class SQLiteData(DataInterface):
     def getFolderBaseSuggestion(self):
         return str(Path.home())
 
+    def countEnvironmentGroups(self):
+        counting_query = "SELECT COUNT(name) as countingEnvironmentGroups FROM {environment_group};".format(environment_group = self.columnNames["environment_group"])
+        self.cursor.execute(counting_query)
+        resultsRows = self.cursor.fetchall()
+        return resultsRows[0][0]
+
     def createDatabaseTables(self):
         
         create_variable_table_statement = """

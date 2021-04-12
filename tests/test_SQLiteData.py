@@ -45,11 +45,19 @@ class test_SQLiteData(unittest.TestCase):
         with self.assertRaises(Exception):
             sqliteData.environmentGroup(environmentGroupNameTesting).save()
 
+    def test_getFileNameSuggestion(self):
+        sqliteData = SQLiteData()
+        self.assertEqual(".dotenv_manager", sqliteData.getFileNameSuggestion())
+
     def test_return_string_creating_empty_database(self):
         sqliteData = self.__getTemporarySqliteConnection()
         responseCreated = sqliteData.createDatabaseTables()
         expectedResponse = "created"
         self.assertEqual(expectedResponse, responseCreated)
+
+    def test_getFolderBaseSuggestion(self):
+        sqlLiteData = SQLiteData()
+        self.assertEqual(str(Path.home()), sqlLiteData.getFolderBaseSuggestion())
 
     def test_correct_path_for_sqlite(self):
 
@@ -69,6 +77,18 @@ class test_SQLiteData(unittest.TestCase):
         object_path = sqliteData.getFullDatabasePath()
         self.assertEqual(expected_path, object_path)
 
+    def test_countEnvironmentGroups(self):
+        sqliteData = self.__prepareEmptySqliteObject()
+        sqliteData.environmentGroup("EnvsFromProjectOne").save()
+        sqliteData.environmentGroup("EnvsFromAnotherProject").save()
+        sqliteData.environmentGroup("ThirdContainerVariables").save()
+        self.assertEqual(3, sqliteData.countEnvironmentGroups())
+
+    def __prepareEmptySqliteObject(self):
+        sqliteData = self.__getTemporarySqliteConnection()
+        sqliteData.createDatabaseTables()
+        return sqliteData
+    
     def __getTemporaryTestDir(self):
         dateHash = DcgsPythonHelpers().getHashDateFromDate()
         systemTemporaryLocation = tempfile.gettempdir()
@@ -82,7 +102,6 @@ class test_SQLiteData(unittest.TestCase):
 
     def __makeTemporaryTestDir(self):
         temporaryDir = self.__getTemporaryTestDir()
-        # print(temporaryDir + "------")
         os.makedirs(temporaryDir)
         return temporaryDir
 
