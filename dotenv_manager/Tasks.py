@@ -1,3 +1,5 @@
+from dotenv_manager.TaskManage import TaskManage
+
 class Tasks:
 
     def zeroOrder(self):
@@ -31,3 +33,11 @@ demanager -m <groupenvironment> -t <file_path>
 Creates a variable template, may some variables needed for some kind of project that will require run in different environments with the same variables changed
 """
         print(message)
+
+    def process(self, arguments):
+        
+        if arguments.manage != None:
+            TaskManage(arguments.manage)
+            
+
+

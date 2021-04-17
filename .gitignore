@@ -1,1 +1,3 @@
 .vscode/settings.json
+tests/__pycache__
+dotenv_manager/__pycache__
