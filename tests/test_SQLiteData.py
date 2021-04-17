@@ -96,7 +96,33 @@ class test_SQLiteData(unittest.TestCase):
         with self.assertRaises(Exception):
             sqliteData.countEnvironmentGroups()
 
-    def __prepareEmptySqliteObject(self):
+    def test_is_tables_created_false(self):
+        sqliteData = SQLiteData()
+        databaseFullPath = os.path.join(
+            self.__makeTemporaryTestDir(),
+            sqliteData.getFileNameSuggestion()
+        )
+        sqliteData.setDatabaseFullPath(databaseFullPath)
+
+        self.assertFalse(sqliteData.is_tables_created())
+
+    def test_is_tables_created_true(self):
+        sqliteData = SQLiteData()
+        databaseFullPath = os.path.join(
+            self.__makeTemporaryTestDir(),
+            sqliteData.getFileNameSuggestion()
+        )
+        sqliteData.setDatabaseFullPath(databaseFullPath)
+
+        sqliteData.createDatabaseTables()
+
+        self.assertTrue(sqliteData.is_tables_created())
+
+    def test_tuple_columnNames(self):
+        sqliteData = self.__getTemporarySqliteConnection()
+        self.assertTrue(isinstance(sqliteData.columnNames, dict))
+
+    def __prepareEmptySqliteObject(self) -> SQLiteData:
         sqliteData = self.__getTemporarySqliteConnection()
         sqliteData.createDatabaseTables()
         return sqliteData

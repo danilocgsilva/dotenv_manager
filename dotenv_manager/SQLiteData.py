@@ -65,6 +65,16 @@ class SQLiteData(DataInterface):
         resultsRows = self.cursor.fetchall()
         return resultsRows[0][0]
 
+    def is_tables_created(self) -> bool:
+
+        for k,v in self.columnNames.items():
+            query = "SELECT name FROM sqlite_master WHERE type='table' AND name = '{table_name}'".format(table_name = v)
+            self.cursor.execute(query)
+            resultsRows = self.cursor.fetchall()
+            if len(resultsRows) == 0:
+                return False
+        return True
+
     def createDatabaseTables(self):
         
         create_variable_table_statement = """
