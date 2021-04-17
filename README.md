@@ -21,7 +21,7 @@ pip install .
 ```
 demanager
 ```
-List all commands for demanager
+Prints a help text for user
 
 (to be implemented)
 ```
