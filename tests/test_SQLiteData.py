@@ -109,6 +109,17 @@ class test_SQLiteData(unittest.TestCase):
         sqliteData.setDatabaseFullPath(databaseFullPath)
         self.assertTrue(sqliteData.is_tables_created())
 
+    def test_create_three_environment_groups_and_count(self):
+        environmentGroupNameOne = "Freelancer"
+        environmentGroupNameTwo = "Official_Workk"
+
+        sqliteData = self.__getTemporarySqliteConnection()
+
+        sqliteData.environmentGroup(environmentGroupNameOne).save()
+        sqliteData.environmentGroup(environmentGroupNameTwo).save()
+
+        self.assertEqual(2, sqliteData.countEnvironmentGroups())
+
     def __prepareEmptySqliteObject(self) -> SQLiteData:
         sqliteData = self.__getTemporarySqliteConnection()
         return sqliteData
