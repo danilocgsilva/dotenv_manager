@@ -74,18 +74,6 @@ class test_SQLiteData(unittest.TestCase):
         sqliteData.environmentGroup("ThirdContainerVariables").save()
         self.assertEqual(3, sqliteData.countEnvironmentGroups())
 
-    # def test_countEnvironmentGroups_exception_empty(self):
-    #     sqliteData = SQLiteData()
-    #     databaseFullPath = os.path.join(
-    #         self.__makeTemporaryTestDir(),
-    #         sqliteData.getFileNameSuggestion()
-    #     )
-    #     sqliteData.setDatabaseFullPath(databaseFullPath)
-
-    #     environemnt_group = "my_working_vars"
-    #     with self.assertRaises(Exception):
-    #         sqliteData.countEnvironmentGroups()
-
     def test_countEnvironmentGroups_empty(self):
         sqliteData = SQLiteData()
         databaseFullPath = os.path.join(
