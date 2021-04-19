@@ -18,9 +18,14 @@ class SQLiteData(DataInterface):
         }
 
     def setDatabaseFullPath(self, full_path: str):
+
+        file_already_exists = os.path.isfile(full_path)
+
         self.databaseFullPath = full_path
         self.connection = sqlite3.connect(self.getFullDatabasePath())
         self.cursor = self.connection.cursor()
+        if not file_already_exists:
+            self.__createDatabaseTables()
 
     def exists(self):
         statement_search = "SELECT name FROM " + self.columnNames["environment_group"]  + " WHERE name = ?;"
@@ -75,7 +80,7 @@ class SQLiteData(DataInterface):
                 return False
         return True
 
-    def createDatabaseTables(self):
+    def __createDatabaseTables(self):
         
         create_variable_table_statement = """
 CREATE TABLE {table_name} (
@@ -102,7 +107,6 @@ CREATE TABLE {table_name} (
         self.cursor.execute(create_variable_group_statements.format(table_name = self.columnNames["variable_group"]))
         self.cursor.execute(create_environment_group_table_statements.format(table_name = self.columnNames["environment_group"]))
         self.cursor.execute(create_table_templates_statements.format(table_name = self.columnNames["templates"]))
-        return "created"
 
     def __environmentGroupAlreadyExists(self, environmentGroupName):
 

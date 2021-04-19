@@ -12,7 +12,6 @@ class test_SQLiteData(unittest.TestCase):
     def test_not_exists_environment_group(self):
 
         sqliteData = self.__getTemporarySqliteConnection()
-        sqliteData.createDatabaseTables()
 
         environmentGroupName = "my_environment"
         existsGroup = sqliteData.environmentGroup(environmentGroupName).exists()
@@ -21,7 +20,6 @@ class test_SQLiteData(unittest.TestCase):
     def test_save_environment_group(self):
 
         sqliteData = self.__getTemporarySqliteConnection()
-        sqliteData.createDatabaseTables()
 
         environmentGroupName = "my_environment"
         sqliteData.environmentGroup(environmentGroupName).save()
@@ -30,7 +28,6 @@ class test_SQLiteData(unittest.TestCase):
 
     def test_not_existing_for_another_environment_group(self):
         sqliteData = self.__getTemporarySqliteConnection()
-        sqliteData.createDatabaseTables()
         environmentGroupName = "my_environment"
         anotherEnvironmentGroup = "another_group"
         sqliteData.environmentGroup(environmentGroupName).save()
@@ -40,7 +37,6 @@ class test_SQLiteData(unittest.TestCase):
     def test_save_already_existing_environment_group(self):
         environmentGroupNameTesting = "created_earlier"
         sqliteData = self.__getTemporarySqliteConnection()
-        sqliteData.createDatabaseTables()
         sqliteData.environmentGroup(environmentGroupNameTesting).save()
         with self.assertRaises(Exception):
             sqliteData.environmentGroup(environmentGroupNameTesting).save()
@@ -48,12 +44,6 @@ class test_SQLiteData(unittest.TestCase):
     def test_getFileNameSuggestion(self):
         sqliteData = SQLiteData()
         self.assertEqual(".dotenv_manager", sqliteData.getFileNameSuggestion())
-
-    def test_return_string_creating_empty_database(self):
-        sqliteData = self.__getTemporarySqliteConnection()
-        responseCreated = sqliteData.createDatabaseTables()
-        expectedResponse = "created"
-        self.assertEqual(expectedResponse, responseCreated)
 
     def test_getFolderBaseSuggestion(self):
         sqlLiteData = SQLiteData()
@@ -84,7 +74,7 @@ class test_SQLiteData(unittest.TestCase):
         sqliteData.environmentGroup("ThirdContainerVariables").save()
         self.assertEqual(3, sqliteData.countEnvironmentGroups())
 
-    def test_countEnvironmentGroups_exception_empty(self):
+    def test_countEnvironmentGroups_empty(self):
         sqliteData = SQLiteData()
         databaseFullPath = os.path.join(
             self.__makeTemporaryTestDir(),
@@ -93,18 +83,8 @@ class test_SQLiteData(unittest.TestCase):
         sqliteData.setDatabaseFullPath(databaseFullPath)
 
         environemnt_group = "my_working_vars"
-        with self.assertRaises(Exception):
-            sqliteData.countEnvironmentGroups()
-
-    def test_is_tables_created_false(self):
-        sqliteData = SQLiteData()
-        databaseFullPath = os.path.join(
-            self.__makeTemporaryTestDir(),
-            sqliteData.getFileNameSuggestion()
-        )
-        sqliteData.setDatabaseFullPath(databaseFullPath)
-
-        self.assertFalse(sqliteData.is_tables_created())
+        self.assertEqual(0, sqliteData.countEnvironmentGroups())
+            
 
     def test_is_tables_created_true(self):
         sqliteData = SQLiteData()
@@ -114,17 +94,23 @@ class test_SQLiteData(unittest.TestCase):
         )
         sqliteData.setDatabaseFullPath(databaseFullPath)
 
-        sqliteData.createDatabaseTables()
-
         self.assertTrue(sqliteData.is_tables_created())
 
     def test_tuple_columnNames(self):
         sqliteData = self.__getTemporarySqliteConnection()
         self.assertTrue(isinstance(sqliteData.columnNames, dict))
 
+    def test_database_created_after_setting_path(self):
+        sqliteData = SQLiteData()
+        databaseFullPath = os.path.join(
+            self.__makeTemporaryTestDir(),
+            sqliteData.getFileNameSuggestion()
+        )
+        sqliteData.setDatabaseFullPath(databaseFullPath)
+        self.assertTrue(sqliteData.is_tables_created())
+
     def __prepareEmptySqliteObject(self) -> SQLiteData:
         sqliteData = self.__getTemporarySqliteConnection()
-        sqliteData.createDatabaseTables()
         return sqliteData
     
     def __getTemporaryTestDir(self):
@@ -145,7 +131,7 @@ class test_SQLiteData(unittest.TestCase):
 
     def __getTemporarySqliteConnection(self):
         temporary_directory = self.__makeTemporaryTestDir()
-        sqliteData = SQLiteData()
+        sqliteData = SQLiteData()   
         temporary_full_path_sqlite_file = os.path.join(
             temporary_directory,
             sqliteData.getFileNameSuggestion()
